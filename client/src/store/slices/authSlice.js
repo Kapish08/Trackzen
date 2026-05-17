@@ -11,35 +11,59 @@ const initialState = {
   message: '',
 };
 
-export const register = createAsyncThunk('auth/register', async (userData, thunkAPI) => {
-  try {
-    const response = await api.post('/auth/register', userData);
-    if (response.data) {
-      localStorage.setItem('user', JSON.stringify(response.data));
-    }
-    return response.data;
-  } catch (error) {
-    const message = error.response?.data?.message || error.message || error.toString();
-    return thunkAPI.rejectWithValue(message);
-  }
-});
+// Register User
+export const register = createAsyncThunk(
+  'auth/register',
+  async (userData, thunkAPI) => {
+    try {
+      const response = await api.post('/api/auth/register', userData);
 
-export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) => {
-  try {
-    const response = await api.post('/auth/login', userData);
-    if (response.data) {
-      localStorage.setItem('user', JSON.stringify(response.data));
-    }
-    return response.data;
-  } catch (error) {
-    const message = error.response?.data?.message || error.message || error.toString();
-    return thunkAPI.rejectWithValue(message);
-  }
-});
+      if (response.data) {
+        localStorage.setItem('user', JSON.stringify(response.data));
+      }
 
-export const logout = createAsyncThunk('auth/logout', async () => {
-  localStorage.removeItem('user');
-});
+      return response.data;
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Login User
+export const login = createAsyncThunk(
+  'auth/login',
+  async (userData, thunkAPI) => {
+    try {
+      const response = await api.post('/api/auth/login', userData);
+
+      if (response.data) {
+        localStorage.setItem('user', JSON.stringify(response.data));
+      }
+
+      return response.data;
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Logout User
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async () => {
+    localStorage.removeItem('user');
+  }
+);
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -54,6 +78,7 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Register
       .addCase(register.pending, (state) => {
         state.isLoading = true;
       })
@@ -68,6 +93,8 @@ export const authSlice = createSlice({
         state.message = action.payload;
         state.user = null;
       })
+
+      // Login
       .addCase(login.pending, (state) => {
         state.isLoading = true;
       })
@@ -82,6 +109,8 @@ export const authSlice = createSlice({
         state.message = action.payload;
         state.user = null;
       })
+
+      // Logout
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
       });
