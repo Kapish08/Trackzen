@@ -48,7 +48,7 @@ const SharedGoals = () => {
     try {
       setIsLoading(true);
 
-      const res = await api.get('/shared-goals');
+      const res = await api.get('/api/shared-goals');
 
       setSharedGoals(res.data || []);
 
@@ -75,7 +75,7 @@ const SharedGoals = () => {
       setCreating(true);
 
       // FIXED ROUTE
-      await api.post('/shared-goals', {
+      await api.post('/api/shared-goals', {
         ...form,
         target: Number(form.target),
         departmentId:
