@@ -59,7 +59,7 @@ export const login = createAsyncThunk(
 
 // Logout User
 export const logout = createAsyncThunk(
-  'auth/logout',
+  '/api/auth/logout',
   async () => {
     localStorage.removeItem('user');
   }

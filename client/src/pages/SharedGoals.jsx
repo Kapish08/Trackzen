@@ -27,7 +27,7 @@ const SharedGoals = () => {
 
   const fetchSharedGoals = async () => {
     try {
-      const res = await api.get('/shared-goals');
+      const res = await api.get('/api/shared-goals');
       setSharedGoals(res.data);
     } catch (err) {
       console.error(err);
@@ -44,7 +44,7 @@ const SharedGoals = () => {
     }
     setCreating(true);
     try {
-      await api.post('/shared-goals', {
+      await api.post('/api/shared-goals', {
         ...form,
         target: Number(form.target),
         departmentId: form.departmentId || undefined

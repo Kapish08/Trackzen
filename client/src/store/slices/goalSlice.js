@@ -10,9 +10,9 @@ const initialState = {
 };
 
 // Create new goals
-export const createGoals = createAsyncThunk('goals/create', async (goalData, thunkAPI) => {
+export const createGoals = createAsyncThunk('/api/goals/create', async (goalData, thunkAPI) => {
   try {
-    const response = await api.post('/goals', { 
+    const response = await api.post('/api/goals', { 
       goals: goalData,
       quarter: 'Q2-2024',
       year: 2024
@@ -25,9 +25,9 @@ export const createGoals = createAsyncThunk('goals/create', async (goalData, thu
 });
 
 // Get user goals
-export const getGoals = createAsyncThunk('goals/getAll', async (_, thunkAPI) => {
+export const getGoals = createAsyncThunk('/api/goals/getAll', async (_, thunkAPI) => {
   try {
-    const response = await api.get('/goals');
+    const response = await api.get('/api/goals');
     return response.data;
   } catch (error) {
     const message = error.response?.data?.message || error.message || error.toString();

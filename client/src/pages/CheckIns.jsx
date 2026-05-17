@@ -46,7 +46,7 @@ const CheckIns = () => {
     if (!updateModal || newProgress === '') return;
     setSaving(true);
     try {
-      await api.put(`/goals/${updateModal._id}/progress`, { progress: Number(newProgress) });
+      await api.put(`/api/goals/${updateModal._id}/progress`, { progress: Number(newProgress) });
       setSavedGoalId(updateModal._id);
       dispatch(getGoals()); // refresh
       setUpdateModal(null);
