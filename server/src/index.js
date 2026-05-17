@@ -10,6 +10,7 @@ require('./jobs/escalationJob');
 
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: process.env.CLIENT_URL || "http://localhost:5173",
@@ -19,6 +20,7 @@ const io = new Server(server, {
 
 // Middleware
 app.use(express.json());
+
 app.use(cors({
   origin: [
     process.env.CLIENT_URL || 'http://localhost:5173',
@@ -26,18 +28,23 @@ app.use(cors({
   ],
   credentials: true
 }));
+
 app.use(morgan('dev'));
 app.use(helmet());
 
 // DB Connection
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.log('DB Connection Error: ', err));
+console.log("MONGO URI:", process.env.MONGODB_URI);
+
+mongoose.connect(process.env.MONGODB_URI, {
+  serverSelectionTimeoutMS: 30000,
+})
+.then(() => console.log('MongoDB Connected Successfully'))
+.catch((err) => console.log('MongoDB Connection Error:', err));
 
 // Socket.io
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
-  
+
   socket.on('join', (userId) => {
     socket.join(userId);
     console.log(`User ${userId} joined their room`);
@@ -59,16 +66,19 @@ app.get('/', (req, res) => {
   res.send('TrackZen API is running...');
 });
 
-// Error Handling Middleware
+// Error Middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!', error: err.message });
+  res.status(500).json({
+    message: 'Something went wrong!',
+    error: err.message
+  });
 });
 
 const PORT = process.env.PORT || 5001;
+
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// Export IO for use in other files
 module.exports = { io };
