@@ -62,7 +62,7 @@ function App() {
             user
               ? (
                   <Layout>
-                    <Notifications />
+                    <Notification />
                   </Layout>
                 )
               : (
