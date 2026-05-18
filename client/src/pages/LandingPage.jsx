@@ -130,7 +130,7 @@ const LandingPage = () => {
             <span className="text-xl font-bold text-slate-800 tracking-tight">TrackZen</span>
           </div>
           <div className="text-slate-500 text-sm italic">
-            © 2024 TrackZen Enterprise Systems. All rights reserved.
+            © 2026 TrackZen Enterprise Systems. All rights reserved.
           </div>
           <div className="flex gap-6">
             <a href="#" className="text-slate-400 hover:text-primary-600 transition-colors">Privacy</a>
