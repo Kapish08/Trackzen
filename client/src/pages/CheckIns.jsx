@@ -91,7 +91,7 @@ const CheckIns = () => {
 
       // FIXED ROUTE
       await api.put(
-        `/goals/${updateModal._id}/progress`,
+        `/api/goals/${updateModal._id}/progress`,
         {
           progress: Number(newProgress),
         }
