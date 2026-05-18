@@ -7,7 +7,7 @@ import {
   MoreVertical,
   CheckCircle2,
   Clock,
-  ArrowRight,
+ ArrowRight,
   MessageSquare,
   AlertCircle,
   Loader2,
@@ -18,29 +18,25 @@ import { Modal, Button, Card } from '../components/ui';
 
 const Team = () => {
   const [searchTerm, setSearchTerm] = useState('');
-
   const [teamMembers, setTeamMembers] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
   const [selectedMember, setSelectedMember] = useState(null);
-
   const [memberGoals, setMemberGoals] = useState([]);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [goalLoading, setGoalLoading] = useState(false);
 
   useEffect(() => {
     fetchTeam();
   }, []);
 
-  // FIXED ROUTE
+  // FETCH TEAM
   const fetchTeam = async () => {
     try {
       setLoading(true);
 
-      const res = await api.get('/users/team');
+      // FIXED ROUTE
+      const res = await api.get('/api/users/team');
 
       setTeamMembers(res.data || []);
 
@@ -58,14 +54,12 @@ const Team = () => {
   const handleReview = async (member) => {
     try {
       setSelectedMember(member);
-
       setIsModalOpen(true);
-
       setGoalLoading(true);
 
       // FIXED ROUTE
       const res = await api.get(
-        `/users/team/${member._id}/goals`
+        `/api/users/team/${member._id}/goals`
       );
 
       setMemberGoals(res.data || []);
@@ -92,13 +86,13 @@ const Team = () => {
 
       // FIXED ROUTE
       await api.put(
-        `/goals/${goalId}/status`,
+        `/api/goals/${goalId}/status`,
         { status }
       );
 
       // REFRESH GOALS
       const res = await api.get(
-        `/users/team/${selectedMember._id}/goals`
+        `/api/users/team/${selectedMember._id}/goals`
       );
 
       setMemberGoals(res.data || []);
@@ -157,7 +151,7 @@ const Team = () => {
     }
   };
 
-  // FILTER
+  // FILTER MEMBERS
   const filteredMembers = teamMembers.filter(
     (member) =>
       member.name
@@ -228,8 +222,26 @@ const Team = () => {
         </div>
       )}
 
+      {/* EMPTY */}
+      {!loading && filteredMembers.length === 0 && (
+        <Card className="text-center py-16">
+          <AlertCircle
+            className="mx-auto text-slate-300 mb-4"
+            size={50}
+          />
+
+          <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300">
+            No Team Members Found
+          </h3>
+
+          <p className="text-slate-500 mt-2">
+            No employees are assigned to your team yet.
+          </p>
+        </Card>
+      )}
+
       {/* TABLE */}
-      {!loading && (
+      {!loading && filteredMembers.length > 0 && (
         <div className="glass-card rounded-3xl overflow-hidden dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800">
 
           <div className="overflow-x-auto">
@@ -334,9 +346,7 @@ const Team = () => {
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{
-                              width: `${
-                                member.progress || 0
-                              }%`,
+                              width: `${member.progress || 0}%`,
                             }}
                             className={`h-full rounded-full ${
                               member.progress > 80
@@ -473,67 +483,6 @@ const Team = () => {
                 <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
                   {goal.description}
                 </p>
-
-                <div className="grid grid-cols-2 gap-4 mb-6">
-
-                  <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
-
-                    <p className="text-[10px] text-slate-500 font-bold uppercase">
-                      Weightage
-                    </p>
-
-                    <p className="text-lg font-black text-slate-800 dark:text-white">
-                      {goal.weightage}%
-                    </p>
-
-                  </div>
-
-                  <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
-
-                    <p className="text-[10px] text-slate-500 font-bold uppercase">
-                      Target
-                    </p>
-
-                    <p className="text-lg font-black text-slate-800 dark:text-white">
-                      {goal.target} {goal.uom}
-                    </p>
-
-                  </div>
-
-                </div>
-
-                {/* ACTIONS */}
-                {goal.status === 'Submitted' && (
-
-                  <div className="flex gap-3">
-
-                    <Button
-                      className="flex-1"
-                      onClick={() =>
-                        handleStatusUpdate(
-                          goal._id,
-                          'Approved'
-                        )
-                      }
-                    >
-                      Approve
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      className="flex-1 text-red-600 hover:text-red-700"
-                      onClick={() =>
-                        handleStatusUpdate(
-                          goal._id,
-                          'Rework Requested'
-                        )
-                      }
-                    >
-                      Request Rework
-                    </Button>
-
-                  </div>
-                )}
 
               </Card>
             ))
