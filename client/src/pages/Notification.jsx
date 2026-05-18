@@ -4,7 +4,7 @@ import { Bell, Loader2 } from 'lucide-react';
 
 import api from '../utils/api';
 
-const Notification = () => {
+const Notifications = () => {
 
   const [notifications, setNotifications] =
     useState([]);
