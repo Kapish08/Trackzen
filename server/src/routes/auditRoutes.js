@@ -12,7 +12,6 @@ const {
   authorize
 } = require('../middleware/auth');
 
-// GET ALL AUDIT LOGS
 router.get(
   '/',
   protect,
@@ -20,7 +19,6 @@ router.get(
   getAuditLogs
 );
 
-// EXPORT AUDIT LOGS CSV
 router.get(
   '/export',
   protect,
