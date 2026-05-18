@@ -96,6 +96,33 @@ const AuditLogPage = () => {
     return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400';
   };
 
+  const handleExport = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/audit/export`,
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+          responseType: 'blob',
+        }
+      );
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'audit-logs.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error exporting logs:', error);
+      alert('Failed to export logs');
+    }
+  };
+
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -126,7 +153,10 @@ const AuditLogPage = () => {
             Last 30 Days
           </button>
 
-          <button className="px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-primary-500/20 hover:bg-primary-700 transition-all">
+          <button 
+            onClick={handleExport}
+            className="px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-primary-500/20 hover:bg-primary-700 transition-all"
+          >
             Export Logs
           </button>
         </div>
