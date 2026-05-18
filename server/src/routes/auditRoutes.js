@@ -2,10 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const {
-  getAuditLogs,
-  exportAuditLogs
-} = require('../controllers/auditController');
+const auditController = require('../controllers/auditController');
 
 const {
   protect,
@@ -16,14 +13,14 @@ router.get(
   '/',
   protect,
   authorize('Admin'),
-  getAuditLogs
+  auditController.getAuditLogs
 );
 
 router.get(
   '/export',
   protect,
   authorize('Admin'),
-  exportAuditLogs
+  auditController.exportAuditLogs
 );
 
 module.exports = router;
