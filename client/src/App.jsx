@@ -16,6 +16,7 @@ import SharedGoals from './pages/SharedGoals';
 import CheckIns from './pages/CheckIns';
 import AuditLog from './pages/AuditLog';
 import LandingPage from './pages/LandingPage';
+import Notification from './pages/Notification';
 
 import Layout from './layouts/Layout';
 
@@ -55,6 +56,20 @@ function App() {
           }
         />
 
+        <Route
+          path="/notifications"
+          element={
+            user
+              ? (
+                  <Layout>
+                    <Notifications />
+                  </Layout>
+                )
+              : (
+                  <Navigate to="/login" />
+                )
+          }
+        />
         {/* PROTECTED ROUTES */}
 
         <Route

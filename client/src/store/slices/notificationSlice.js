@@ -1,31 +1,89 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
+import api from '../../utils/api';
+
+export const getNotifications =
+  createAsyncThunk(
+    'notifications/getAll',
+
+    async (_, thunkAPI) => {
+
+      try {
+
+        const res = await api.get(
+          '/api/notifications'
+        );
+
+        return res.data;
+
+      } catch (error) {
+
+        return thunkAPI.rejectWithValue(
+          error.response?.data?.message
+        );
+      }
+    }
+  );
 
 const initialState = {
-  notifications: [
-    { id: 1, title: 'Goal Approved', message: 'Your API Performance goal has been approved.', type: 'success', time: '2 mins ago' },
-    { id: 2, title: 'New Shared Goal', message: 'You have been assigned a new departmental KPI.', type: 'info', time: '1 hour ago' },
-    { id: 3, title: 'Check-in Due', message: 'Quarterly check-in for Q2 is due in 3 days.', type: 'warning', time: '5 hours ago' },
-  ],
-  unreadCount: 3,
+
+  notifications: [],
+
+  unreadCount: 0,
+
+  isLoading: false,
+
+  isError: false,
+
+  message: ''
 };
 
-export const notificationSlice = createSlice({
+const notificationSlice = createSlice({
+
   name: 'notifications',
+
   initialState,
-  reducers: {
-    addNotification: (state, action) => {
-      state.notifications.unshift(action.payload);
-      state.unreadCount += 1;
-    },
-    markAsRead: (state) => {
-      state.unreadCount = 0;
-    },
-    clearNotifications: (state) => {
-      state.notifications = [];
-      state.unreadCount = 0;
-    }
-  },
+
+  reducers: {},
+
+  extraReducers: (builder) => {
+
+    builder
+
+      .addCase(
+        getNotifications.pending,
+        (state) => {
+
+          state.isLoading = true;
+        }
+      )
+
+      .addCase(
+        getNotifications.fulfilled,
+        (state, action) => {
+
+          state.isLoading = false;
+
+          state.notifications =
+            action.payload;
+
+          state.unreadCount =
+            action.payload.length;
+        }
+      )
+
+      .addCase(
+        getNotifications.rejected,
+        (state, action) => {
+
+          state.isLoading = false;
+
+          state.isError = true;
+
+          state.message = action.payload;
+        }
+      );
+  }
 });
 
-export const { addNotification, markAsRead, clearNotifications } = notificationSlice.actions;
 export default notificationSlice.reducer;
