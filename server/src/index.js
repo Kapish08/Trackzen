@@ -56,12 +56,13 @@ io.on('connection', (socket) => {
 });
 
 // Routes
+// Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/goals', require('./routes/goalRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/audit', require('./routes/auditRoutes'));
 app.use('/api/shared-goals', require('./routes/sharedGoalRoutes'));
-
+app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.get('/', (req, res) => {
   res.send('TrackZen API is running...');
 });
